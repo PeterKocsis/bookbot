@@ -1,4 +1,6 @@
+import sys
 from stats import get_character_count, get_word_count, sort_character_by_count
+from sys import argv
 
 def get_book_text(path_to_file):
     """
@@ -23,9 +25,9 @@ def character_stat_report(character_stats):
         if item_set["char"].isalpha():
             print(f"{item_set["char"]}: {item_set["count"]}")
 
-def make_report(number_of_words, character_stats):
+def make_report(number_of_words, character_stats, path_to_file):
     print("============ BOOKBOT ============")
-    print("Analyzing book found at books/frankenstein.txt...")
+    print(f"Analyzing book found at {path_to_file}...")
     word_count_report(number_of_words)
     character_stat_report(character_stats)
     print("============= END ===============")
@@ -36,15 +38,18 @@ def main():
     """
     Main function to execute the script.
     """
-    # Path to the book file
-    path_to_file = './books/frankenstein.txt'
+    if len(argv) != 2:
+        print("Usage: python3 main.py <path_to_book>")
+        return sys.exit(1)
+    else:
+        path_to_file = argv[1]
     
     # Get the book text
     try:
         book_text = get_book_text(path_to_file)
         number_of_words = get_word_count(book_text)
         character_stats = sort_character_by_count(get_character_count(book_text), descending=True)
-        make_report(number_of_words, character_stats)
+        make_report(number_of_words, character_stats, path_to_file)
 
     except FileNotFoundError:
         print(f"Error: The file {path_to_file} was not found.")
